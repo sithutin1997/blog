@@ -1,3 +1,11 @@
+<?php
+session_start();
+require 'config/config.php';
+if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in']))
+{
+  header('Location: login.php');
+};
+ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,7 +33,7 @@
 
 
   <!-- Content Wrapper. Contains page content -->
-  <div class="">
+  <div class="content-wrapper" style="margin-left:0px !important">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">

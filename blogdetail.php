@@ -5,6 +5,10 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in']))
 {
   header('Location: login.php');
 };
+
+$stmt=$pdo->prepare("SELECT * FROM posts WHERE id=".$_GET['id']);
+$stmt->execute();
+$result=$stmt->fetchAll();
  ?>
 <!DOCTYPE html>
 <html>
@@ -24,7 +28,7 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in']))
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 </head>
 <body class="hold-transition sidebar-mini">
-<div class="">
+<div class="wrapper">
   <!-- Navbar -->
 
   <!-- /.navbar -->
@@ -33,7 +37,7 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in']))
 
 
   <!-- Content Wrapper. Contains page content -->
-  <div class="">
+  <div class="content-wrapper" style="margin-left:0px !important;">
     <!-- Content Header (Page header) -->
     <!-- Main content -->
     <section class="content">
@@ -43,8 +47,8 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in']))
           <div class="card card-widget">
             <div class="card-header">
               <div class="card-header">
-                <div  style="text-align:center !important; float:none;" class="card-title">
-                  <h4>Blog Title</h4>
+                <div  style="text-align:center !important;float:none;" class="card-title">
+                  <h4><?php echo $result[0]['title']; ?></h4>
 
                 </div>
                 <!-- /.user-block -->
@@ -57,12 +61,10 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in']))
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-              <img class="img-fluid pad" src="dist/img/photo2.png" alt="Photo">
-
-              <p>I took this photo this morning. What do you guys think?</p>
-              <button type="button" class="btn btn-default btn-sm"><i class="fas fa-share"></i> Share</button>
-              <button type="button" class="btn btn-default btn-sm"><i class="far fa-thumbs-up"></i> Like</button>
-              <span class="float-right text-muted">127 likes - 3 comments</span>
+              <img class="img-fluid pad" src="admin/images/<?php echo $result[0]['image'] ?>">
+              <br><br>
+              <p><?php echo $result[0]['content']; ?></p>
+              <h3>Comments</h3><hr>
             </div>
             <!-- /.card-body -->
             <div class="card-footer card-comments">

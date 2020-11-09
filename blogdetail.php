@@ -21,7 +21,8 @@ $auId = $cmResult[0]['author_id'];
 $stmt2=$pdo->prepare("SELECT * FROM users WHERE id=$auId");
 $stmt2->execute();
 $auResult=$stmt2->fetchAll();
-
+echo "<pre>";
+print_r($result);
 
 if($_POST)
 {

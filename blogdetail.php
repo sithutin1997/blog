@@ -16,13 +16,13 @@ $stmt1=$pdo->prepare("SELECT * FROM comments WHERE post_id=$post_id");
 $stmt1->execute();
 $cmResult=$stmt1->fetchAll();
 
+
 $auId = $cmResult[0]['author_id'];
 
 $stmt2=$pdo->prepare("SELECT * FROM users WHERE id=$auId");
 $stmt2->execute();
 $auResult=$stmt2->fetchAll();
-echo "<pre>";
-print_r($result);
+
 
 if($_POST)
 {
@@ -100,21 +100,32 @@ if($_POST)
               <a href="index.php" type="button" class="btn btn-default">Back</a>
             </div>
             <!-- /.card-body -->
-            <div class="card-footer card-comments">
-              <div class="card-comment">
-                <div class="comment-text" style="margin-left:0px !important;">
-                  <span class="username">
-                    <?php echo $auResult[0]['name']; ?>
-                    <span class="text-muted float-right"><?php echo $cmResult[0]['created_at'];  ?></span>
-                  </span><!-- /.username -->
-                <?php echo $cmResult[0]['content']; ?>
-                </div>
-                <!-- /.comment-text -->
-              </div>
-              <!-- /.card-comment -->
+            <?php
+                  if($cmResult)
+                  {
+                    foreach ($cmResult as $value) {
+                ?>
+                    <div class="card-footer card-comments">
+                      <div class="card-comment">
+                        <div class="comment-text" style="margin-left:0px !important;">
+                          <span class="username">
+                            <?php echo $auResult[0]['name']; ?>
+                            <span class="text-muted float-right"><?php echo $value['created_at'];  ?></span>
+                          </span><!-- /.username -->
+                        <?php echo $value['content']; ?>
+                        </div>
+                        <!-- /.comment-text -->
+                      </div>
+                      <!-- /.card-comment -->
 
-              <!-- /.card-comment -->
-            </div>
+                      <!-- /.card-comment -->
+                    </div>
+                      <?php
+                  }
+                }
+
+             ?>
+
             <!-- /.card-footer -->
             <div class="card-footer">
               <form action="" method="post">

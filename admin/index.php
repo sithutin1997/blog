@@ -8,7 +8,7 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in']))
 };
 ?>
 
-<?php include('header.html'); ?>
+<?php include('header.php'); ?>
 
 
     <!-- Main content -->
@@ -22,7 +22,7 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in']))
                 <h3 class="card-title">Blog Listing</h3>
               </div>
               <?php
-              if ($_GET['pageno']) {
+              if (isset($_GET['pageno'])) {
                 $pageno = $_GET['pageno'];
               } else {
                 $pageno = 1;

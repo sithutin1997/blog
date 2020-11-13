@@ -46,6 +46,24 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in']))
       $stmt=$pdo->prepare("SELECT * FROM posts ORDER BY id");
       $stmt->execute();
       $result=$stmt->fetchAll();
+
+      if (!empty($_GET['pageno'])) {
+        $pageno = $_GET['pageno'];
+      } else {
+        $pageno = 1;
+      }
+      $numOfrecs = 6;
+      $offset = ($pageno - 1) * $numOfrecs;
+
+      $stmt=$pdo->prepare("SELECT * FROM posts ORDER BY id");
+      $stmt->execute();
+      $rawResult=$stmt->fetchAll();
+      $total_pages = ceil(count($rawResult) / $numOfrecs);
+
+      $stmt=$pdo->prepare("SELECT * FROM posts ORDER BY id LIMIT $offset,$numOfrecs");
+      $stmt->execute();
+      $result=$stmt->fetchAll();
+
      ?>
     <!-- Main content -->
     <section class="content">
@@ -79,12 +97,22 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in']))
                 <!-- /.card-body -->
 
           </div>
-
-
           <!-- /.card -->
-        </div>
+          <div class="row" style="margin-right:0px !important; float:right;">
+            <nav aria-label="Page navigation example"><br>
+                  <ul class="pagination" style="float:right">
+                    <li class="page-item"><a class="page-link" href="?pageno=1">First</a></li>
+                    <li class="page-item <?php if($pageno <= 1) {echo 'disabled';} ?>">
+                      <a class="page-link" href="<?php if($pageno <= 1) {echo "#";}else {echo "?pageno=".($pageno-1);} ?>">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="#"><?php echo $pageno; ?></a></li>
+                    <li class="page-item <?php if($pageno >= $total_pages) {echo 'disabled';} ?>">
+                      <a class="page-link" href="<?php if($pageno >= $total_pages) {echo "#";}else {echo "?pageno=".($pageno+1);} ?>">Next</a></li>
+                    <li class="page-item"><a class="page-link" href="?pageno=<?php echo $total_pages ?>">Last</a></li>
+                  </ul>
+            </nav>
+          </div><br><br><br>
 
-      </div>
+      <
       </section>
     <!-- /.content -->
 
@@ -103,7 +131,7 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in']))
     <!-- Default to the left -->
     <strong>Copyright &copy; 2014-2019 <a href="#">Si Thu Tin</a>.</strong> All rights reserved.
   </footer>
-  </div>
+
   <!-- ./wrapper -->
 
 
@@ -112,7 +140,7 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in']))
     <!-- Control sidebar content goes here -->
   </aside>
   <!-- /.control-sidebar -->
-</div>
+
 <!-- ./wrapper -->
 
 <!-- jQuery -->

@@ -17,11 +17,15 @@ $stmt1->execute();
 $cmResult=$stmt1->fetchAll();
 
 
-$auId = $cmResult[0]['author_id'];
+if ($cmResult) {
+  $auId = $cmResult[0]['author_id'];
 
-$stmt2=$pdo->prepare("SELECT * FROM users WHERE id=$auId");
-$stmt2->execute();
-$auResult=$stmt2->fetchAll();
+
+  $stmt2=$pdo->prepare("SELECT * FROM users WHERE id=$auId");
+  $stmt2->execute();
+  $auResult=$stmt2->fetchAll();
+
+}
 
 
 if($_POST)

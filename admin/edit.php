@@ -46,7 +46,7 @@ $stmt->execute();
 $result=$stmt->fetchAll();
 ?>
 
-<?php include('header.html'); ?>
+<?php include('header.php'); ?>
 
 
     <!-- Main content -->

@@ -6,7 +6,9 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in']))
 {
   header('Location: login.php');
 };
-
+if ($_SESSION['role'] != 1) {
+  header('Location: login.php');
+}
 if($_POST)
 {
     $id = $_POST['id'];
@@ -14,11 +16,19 @@ if($_POST)
     $email = $_POST['email'];
     $password = $_POST['password'];
 
+    $stmt2 = $pdo->prepare("SELECT * FROM users WHERE email=:email AND id!=:id");
+
+    $stmt2->execute(array(':email'=>$email, ':id'=>$id));
+    $user=$stmt2->fetch(PDO::FETCH_ASSOC);
+    if ($user) {
+      echo"<script>alert('Email duplicated');</script>";
+    }else {
     $stmt = $pdo->prepare("UPDATE users SET name='$name',email='$email',password='$password',role='0' WHERE id='$id'");
     $result = $stmt->execute();
     if ($result) {
       echo"<script>alert('User is Successfully Updated');window.location.href='user_list.php';</script>";
     }
+  }
 }
 $stmt=$pdo->prepare("SELECT * FROM users WHERE id=".$_GET['id']);
 $stmt->execute();

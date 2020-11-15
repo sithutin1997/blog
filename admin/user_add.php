@@ -6,6 +6,9 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in']))
 {
   header('Location: login.php');
 };
+if ($_SESSION['role'] != 1) {
+  header('Location: login.php');
+}
 
 if($_POST)
 {
@@ -19,18 +22,27 @@ if($_POST)
     $name = $_POST['name'];
     $email = $_POST['email'];
     $password = $_POST['password'];
-    $stmt = $pdo->prepare("INSERT INTO users(name,password,email,role) VALUES(:name,:password,:email,:role)");
-    $result = $stmt->execute(
-      array(
-        ':name' => $name,
-        ':password' => $password,
-        ':email' => $email,
-        ':role' => $role
-      )
-    );
-    if ($result) {
-      echo"<script>alert('New User is added');window.location.href='user_list.php';</script>";
 
+    $stmt2 = $pdo->prepare("SELECT * FROM users WHERE email=:email");
+    $stmt2->bindValue(':email',$email);
+    $stmt2->execute();
+    $user=$stmt2->fetch(PDO::FETCH_ASSOC);
+    if ($user) {
+      echo"<script>alert('Email duplicated');</script>";
+    }else {
+      $stmt = $pdo->prepare("INSERT INTO users(name,password,email,role) VALUES(:name,:password,:email,:role)");
+      $result = $stmt->execute(
+        array(
+          ':name' => $name,
+          ':password' => $password,
+          ':email' => $email,
+          ':role' => $role
+        )
+      );
+      if ($result) {
+        echo"<script>alert('New User is added');window.location.href='user_list.php';</script>";
+
+      }
     }
 
 }

@@ -13,8 +13,6 @@ if($_POST)
   $stmt->execute();
 
   $user=$stmt->fetch(PDO::FETCH_ASSOC);
-  echo "<pre>";
-  print_r($user);
   if($user)
   {
     if($user['password']==$password)
@@ -35,7 +33,7 @@ if($_POST)
         $_SESSION['logged_in'] =  time();
         $_SESSION['role'] = 0;
 
-        header('Location: ../index.php');
+        header('Location: index.php');
       }
     }
   echo"<script>alert('Incorrect Eamil and password');</script>";

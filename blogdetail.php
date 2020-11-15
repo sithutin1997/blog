@@ -5,6 +5,9 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in']))
 {
   header('Location: login.php');
 };
+if ($_SESSION['role'] == 1) {
+  header('Location: login.php');
+}
 
 $stmt=$pdo->prepare("SELECT * FROM posts WHERE id=".$_GET['id']);
 $stmt->execute();

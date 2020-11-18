@@ -12,37 +12,49 @@ if ($_SESSION['role'] != 1) {
 
 if($_POST)
 {
-  $id = $_POST['id'];
-  $title = $_POST['title'];
-  $content = $_POST['content'];
-
-
-  if($_FILES['image']['name'] != null)
+  if (empty($_POST['title']) || empty($_POST['content']))
   {
-    $file = 'images/'.($_FILES['image']['name']);
-    $imageType = pathinfo($file,PATHINFO_EXTENSION);
-
-    if($imageType != 'png' && $imageType != 'jpg' && $imageType != 'jpeg')
+    if(empty($_POST['title']))
     {
-      echo "<script>alert('Wrong image file type');</script>";
-    }else {
+      $titleError = 'Title needs to be filled';
+    }
+    if (empty($_POST['content'])) {
+      $contentError = 'Content needs to be filled';
+    }
+  }else {
+    $id = $_POST['id'];
+    $title = $_POST['title'];
+    $content = $_POST['content'];
 
-      $image = $_FILES['image']['name'];
-      move_uploaded_file($_FILES['image']['tmp_name'],$file);
-      $stmt = $pdo->prepare("UPDATE posts SET title='$title',content='$content',image='$image' WHERE id='$id'");
+
+    if($_FILES['image']['name'] != null)
+    {
+      $file = 'images/'.($_FILES['image']['name']);
+      $imageType = pathinfo($file,PATHINFO_EXTENSION);
+
+      if($imageType != 'png' && $imageType != 'jpg' && $imageType != 'jpeg')
+      {
+        echo "<script>alert('Wrong image file type');</script>";
+      }else {
+
+        $image = $_FILES['image']['name'];
+        move_uploaded_file($_FILES['image']['tmp_name'],$file);
+        $stmt = $pdo->prepare("UPDATE posts SET title='$title',content='$content',image='$image' WHERE id='$id'");
+        $result = $stmt->execute();
+        if ($result) {
+          echo"<script>alert('Values is Successfully Updated');window.location.href='index.php';</script>";
+        }
+      }
+    }else {
+      $stmt = $pdo->prepare("UPDATE posts SET title='$title',content='$content' WHERE id='$id'");
       $result = $stmt->execute();
       if ($result) {
         echo"<script>alert('Values is Successfully Updated');window.location.href='index.php';</script>";
+
       }
     }
-  }else {
-    $stmt = $pdo->prepare("UPDATE posts SET title='$title',content='$content' WHERE id='$id'");
-    $result = $stmt->execute();
-    if ($result) {
-      echo"<script>alert('Values is Successfully Updated');window.location.href='index.php';</script>";
-
-    }
   }
+
 }
 $stmt=$pdo->prepare("SELECT * FROM posts WHERE id=".$_GET['id']);
 $stmt->execute();
@@ -62,12 +74,12 @@ $result=$stmt->fetchAll();
                 <form class="" action="" method="post" enctype="multipart/form-data">
                   <div class="form-group">
                     <input type="hidden" name="id" value="<?php echo $result[0]['id'] ?>">
-                    <label for="title">Title</label>
-                    <input type="text" class="form-control"name="title" value="<?php echo $result[0]['title'] ?>" required>
+                    <label for="title">Title</label><p style="color:red;"><?php echo empty($titleError) ? '' : '*'.$titleError; ?></p>
+                    <input type="text" class="form-control"name="title" value="<?php echo $result[0]['title'] ?>">
                   </div>
                   <div class="form-group">
-                    <label for="content">Content</label><br>
-                    <textarea class="form-control" name="content" rows="8" cols="80"required><?php print_r($result[0]['content']) ?></textarea>
+                    <label for="content">Content</label><br><p style="color:red;"><?php echo empty($contentError) ? '' : '*'.$contentError; ?></p>
+                    <textarea class="form-control" name="content" rows="8" cols="80"><?php print_r($result[0]['content']) ?></textarea>
                   </div>
                   <div class="form-group">
                     <label for="image">Image</label><br>

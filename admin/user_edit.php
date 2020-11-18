@@ -11,24 +11,41 @@ if ($_SESSION['role'] != 1) {
 }
 if($_POST)
 {
-    $id = $_POST['id'];
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+  if (empty($_POST['name']) || empty($_POST['email']) || empty($_POST['password']) || strlen($_POST['password']) < 4 )
+  {
+    if(empty($_POST['name']))
+    {
+      $nameError = 'Name needs to be filled';
+    }
+    if (empty($_POST['email'])) {
+      $emailError = 'Email needs to be filled';
+    }
+    if (empty($_POST['password'])){
+        $passwordError = 'Password needs to be filled';
+    } elseif (strlen($_POST['password']) < 4) {
+        $passwordError = 'Password should be at least 4 letters';
+    }
+  } else {
+      $id = $_POST['id'];
+      $name = $_POST['name'];
+      $email = $_POST['email'];
+      $password = $_POST['password'];
 
-    $stmt2 = $pdo->prepare("SELECT * FROM users WHERE email=:email AND id!=:id");
+      $stmt2 = $pdo->prepare("SELECT * FROM users WHERE email=:email AND id!=:id");
 
-    $stmt2->execute(array(':email'=>$email, ':id'=>$id));
-    $user=$stmt2->fetch(PDO::FETCH_ASSOC);
-    if ($user) {
-      echo"<script>alert('Email duplicated');</script>";
-    }else {
-    $stmt = $pdo->prepare("UPDATE users SET name='$name',email='$email',password='$password',role='0' WHERE id='$id'");
-    $result = $stmt->execute();
-    if ($result) {
-      echo"<script>alert('User is Successfully Updated');window.location.href='user_list.php';</script>";
+      $stmt2->execute(array(':email'=>$email, ':id'=>$id));
+      $user=$stmt2->fetch(PDO::FETCH_ASSOC);
+      if ($user) {
+        echo"<script>alert('Email duplicated');</script>";
+      }else {
+      $stmt = $pdo->prepare("UPDATE users SET name='$name',email='$email',password='$password',role='0' WHERE id='$id'");
+      $result = $stmt->execute();
+      if ($result) {
+        echo"<script>alert('User is Successfully Updated');window.location.href='user_list.php';</script>";
+      }
     }
   }
+
 }
 $stmt=$pdo->prepare("SELECT * FROM users WHERE id=".$_GET['id']);
 $stmt->execute();
@@ -48,16 +65,16 @@ $result=$stmt->fetchAll();
                 <form class="" action="" method="post" enctype="multipart/form-data">
                   <div class="form-group">
                     <input type="hidden" name="id" value="<?php echo $result[0]['id'] ?>">
-                    <label for="title">Name</label>
-                    <input type="text" class="form-control" name="name" value="<?php echo $result[0]['name'] ?>" required>
+                    <label for="title">Name</label><p style="color:red;"><?php echo empty($nameError) ? '' : '*'.$nameError; ?></p>
+                    <input type="text" class="form-control" name="name" value="<?php echo $result[0]['name'] ?>">
                   </div>
                   <div class="form-group">
-                    <label for="content">Email</label><br>
-                    <input class="form-control" name="email" rows="8" cols="80" value="<?php print_r($result[0]['email']) ?>"required >
+                    <label for="content">Email</label><br><p style="color:red;"><?php echo empty($emailError) ? '' : '*'.$emailError; ?></p>
+                    <input class="form-control" name="email" rows="8" cols="80" value="<?php print_r($result[0]['email']) ?>">
                   </div>
                   <div class="form-group">
-                    <label for="exampleInputPassword1">Password</label>
-                    <input type="password" class="form-control" name="password" placeholder="Password"value="<?php echo $result[0]['password'] ?>" required>
+                    <label for="exampleInputPassword1">Password</label><p style="color:red;"><?php echo empty($passwordError) ? '' : '*'.$passwordError; ?></p>
+                    <input type="password" class="form-control" name="password" placeholder="Password"value="<?php echo $result[0]['password'] ?>">
                   </div>
                   <div class="form-group">
                   <input type="submit" class="btn btn-success" name="" value="SUBMIT">

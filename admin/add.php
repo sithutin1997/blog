@@ -12,29 +12,43 @@ if ($_SESSION['role'] != 1) {
 
 if($_POST)
 {
-  $file = 'images/'.($_FILES['image']['name']);
-  $imageType = pathinfo($file,PATHINFO_EXTENSION);
-
-  if($imageType != 'png' && $imageType != 'jpg' && $imageType != 'jpeg')
+  if (empty($_POST['title']) || empty($_POST['content']) || empty($_FILES['image']))
   {
-    echo "<script>alert('Wrong image file type');</script>";
+    if(empty($_POST['title']))
+    {
+      $titleError = 'Title needs to be filled';
+    }
+    if (empty($_POST['content'])) {
+      $contentError = 'Content needs to be filled';
+    }
+    if (empty($_FILES['image']['name'])){
+        $imageError = 'Image needs to be filled';
+    }
   }else {
-    $title = $_POST['title'];
-    $content = $_POST['content'];
-    $image = $_FILES['image']['name'];
-    move_uploaded_file($_FILES['image']['tmp_name'],$file);
-    $stmt = $pdo->prepare("INSERT INTO posts(title,content,author_id,image) VALUES(:title,:content,:author_id,:image)");
-    $result = $stmt->execute(
-      array(
-        ':title' => $title,
-        ':content' => $content,
-        ':author_id' => $_SESSION['user_id'],
-        ':image' => $image
-      )
-    );
-    if ($result) {
-      echo"<script>alert('Values is added');window.location.href='index.php';</script>";
+    $file = 'images/'.($_FILES['image']['name']);
+    $imageType = pathinfo($file,PATHINFO_EXTENSION);
 
+    if($imageType != 'png' && $imageType != 'jpg' && $imageType != 'jpeg')
+    {
+      echo "<script>alert('Wrong image file type');</script>";
+    }else {
+      $title = $_POST['title'];
+      $content = $_POST['content'];
+      $image = $_FILES['image']['name'];
+      move_uploaded_file($_FILES['image']['tmp_name'],$file);
+      $stmt = $pdo->prepare("INSERT INTO posts(title,content,author_id,image) VALUES(:title,:content,:author_id,:image)");
+      $result = $stmt->execute(
+        array(
+          ':title' => $title,
+          ':content' => $content,
+          ':author_id' => $_SESSION['user_id'],
+          ':image' => $image
+        )
+      );
+      if ($result) {
+        echo"<script>alert('Values is added');window.location.href='index.php';</script>";
+
+      }
     }
   }
 }
@@ -52,16 +66,16 @@ if($_POST)
               <div class="card-body">
                 <form class="" action="add.php" method="post" enctype="multipart/form-data">
                   <div class="form-group">
-                    <label for="title">Title</label>
-                    <input type="text" class="form-control"name="title" value="" required>
+                    <label for="title">Title</label> <br> <p style="color:red;"><?php echo empty($titleError) ? '' : '*'.$titleError; ?></p>
+                    <input type="text" class="form-control"name="title" value="">
                   </div>
                   <div class="form-group">
-                    <label for="content">Content</label><br>
-                    <textarea class="form-control"name="content" rows="8" cols="80" required></textarea>
+                    <label for="content">Content</label><br><p style="color:red;"><?php echo empty($contentError) ? '' : '*'.$contentError; ?></p>
+                    <textarea class="form-control"name="content" rows="8" cols="80" value=""></textarea>
                   </div>
                   <div class="form-group">
-                    <label for="image">Image</label><br>
-                    <input type="file" name="image" value="" required>
+                    <label for="image">Image</label><p style="color:red;"><?php echo empty($imageError) ? '' : '*'.$imageError; ?></p>
+                    <input type="file" name="image" value="">
                   </div>
                   <div class="form-group">
                   <input type="submit" class="btn btn-success" name="" value="SUBMIT">

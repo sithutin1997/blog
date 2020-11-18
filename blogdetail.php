@@ -32,20 +32,25 @@ if ($cmResult) {
 }
 if($_POST)
 {
-    $content = $_POST['comment'];
+  if (empty($_POST['comment']))
+  {
+      $cmtError = 'Comment needs to be filled';
+  }else{
+      $content = $_POST['comment'];
 
-    $stmt = $pdo->prepare("INSERT INTO comments(content,author_id,post_id) VALUES(:content,:author_id,:post_id)");
-    $result = $stmt->execute(
-      array(
-        ':content' => $content,
-        ':author_id' => $_SESSION['user_id'],
-        ':post_id' => $post_id
-      )
-    );
-    if ($result) {
-      header('Location: blogdetail.php?id='.$post_id);
+      $stmt = $pdo->prepare("INSERT INTO comments(content,author_id,post_id) VALUES(:content,:author_id,:post_id)");
+      $result = $stmt->execute(
+        array(
+          ':content' => $content,
+          ':author_id' => $_SESSION['user_id'],
+          ':post_id' => $post_id
+        )
+      );
+      if ($result) {
+        header('Location: blogdetail.php?id='.$post_id);
+      }
     }
-  }
+}
 
  ?>
 <!DOCTYPE html>
@@ -137,6 +142,7 @@ if($_POST)
             <!-- /.card-footer -->
             <div class="card-footer">
               <form action="" method="post">
+                <p style="color:red;"><?php echo empty($cmtError) ? '' : '*'.$cmtError; ?></p>
 
                 <!-- .img-push is used to add margin to elements next to floating images -->
                 <div class="img-push">

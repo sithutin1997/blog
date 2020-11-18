@@ -36,7 +36,7 @@ if($_POST)
 
       $name = $_POST['name'];
       $email = $_POST['email'];
-      $password = $_POST['password'];
+      $password = password_hash($_POST['password'],PASSWORD_DEFAULT);
 
       $stmt2 = $pdo->prepare("SELECT * FROM users WHERE email=:email");
       $stmt2->bindValue(':email',$email);

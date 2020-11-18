@@ -15,7 +15,7 @@ if($_POST)
   $user=$stmt->fetch(PDO::FETCH_ASSOC);
   if($user)
   {
-    if($user['password']==$password)
+    if(password_verify($password,$user['password']))
     {
 
       if ($user['role']==1) {

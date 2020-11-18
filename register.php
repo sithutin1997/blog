@@ -20,7 +20,7 @@ if($_POST)
   } else {
     $email = $_POST['email'];
     $name = $_POST['name'];
-    $password = $_POST['password'];
+    $password = password_hash($_POST['password'],PASSWORD_DEFAULT);
 
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email");
     $stmt->bindValue(':email',$email);
@@ -98,7 +98,7 @@ if($_POST)
            </div>
          </div>
          <p style="color:red;"><?php echo empty($passwordError) ? '' : '*'.$passwordError; ?></p>
-         <div class="input-group mb-3">           
+         <div class="input-group mb-3">
            <input type="password" name="password" class="form-control" placeholder="Password">
            <div class="input-group-append">
              <div class="input-group-text">

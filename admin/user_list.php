@@ -1,6 +1,7 @@
 <?php
 session_start();
 require '../config/config.php';
+require '../config/common.php';
 
 if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in']))
 {
@@ -91,8 +92,8 @@ if (isset($_POST['search'])) {
                           ?>
                           <tr>
                             <td><?php echo $i; ?></td>
-                            <td><?php echo $value['name']; ?></td>
-                            <td><?php echo $value['email']; ?></td>
+                            <td><?php echo escape($value['name']) ?></td>
+                            <td><?php echo escape($value['email']) ?></td>
                             <td>
                               <div class="btn btn-group">
                                 <div class="Container">

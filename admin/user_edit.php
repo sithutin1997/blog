@@ -68,15 +68,15 @@ $result=$stmt->fetchAll();
                   <div class="form-group">
                     <input type="hidden" name="id" value="<?php echo $result[0]['id'] ?>">
                     <label for="title">Name</label><p style="color:red;"><?php echo empty($nameError) ? '' : '*'.$nameError; ?></p>
-                    <input type="text" class="form-control" name="name" value="<?php echo $result[0]['name'] ?>">
+                    <input type="text" class="form-control" name="name" value="<?php echo escape($result[0]['name']) ?>">
                   </div>
                   <div class="form-group">
                     <label for="content">Email</label><br><p style="color:red;"><?php echo empty($emailError) ? '' : '*'.$emailError; ?></p>
-                    <input class="form-control" name="email" rows="8" cols="80" value="<?php print_r($result[0]['email']) ?>">
+                    <input class="form-control" name="email" rows="8" cols="80" value="<?php escape($result[0]['email']) ?>">
                   </div>
                   <div class="form-group">
                     <label for="exampleInputPassword1">Password</label><p style="color:red;"><?php echo empty($passwordError) ? '' : '*'.$passwordError; ?></p>
-                    <input type="password" class="form-control" name="password" placeholder="Password"value="<?php echo $result[0]['password'] ?>">
+                    <input type="password" class="form-control" name="password" placeholder="Password"value="<?php echo escape($result[0]['password']) ?>">
                   </div>
                   <div class="form-group">
                   <input type="submit" class="btn btn-success" name="" value="SUBMIT">
